@@ -1,0 +1,54 @@
+{
+  "station": "imis:ali:2",
+  "coordinates": [
+    7.090183343,
+    46.19492348,
+    2000
+  ],
+  "description": "Vanil des Artses (ALI1) 1992 m",
+  "timeseries": [
+    {
+      "measurand": "TA10_10MIN_MEAN",
+      "description": "air temperature",
+      "unit": "°C",
+      "groups": [
+        "air temperature"
+      ],
+      "aggregation": {
+        "interval": "10",
+        "type": "mean"
+      },
+      "deviceId": "1445",
+      "deviceType": "Thermometer",
+      "relativePosition": "10",
+      "fromDate": "1999-11-02",
+      "toDate": "",
+
+      "data": [
+        [
+          "2010-08-10 00:30:00",
+          "9.4"
+        ],
+        [
+          "2010-08-10 01:00:00",
+          "9.3"
+        ]
+      ]
+    },
+    {
+      "measurand": "TS50_30MIN_MEAN",
+      "description": "snow temperature 50 cm above ground",
+      "group": "snow temp",
+      "data": [
+        [
+          "2010-08-10 00:30:00",
+          "9.4"
+        ],
+        [
+          "2010-08-10 01:00:00",
+          "9.3"
+        ]
+      ]
+    }
+  ]
+}
