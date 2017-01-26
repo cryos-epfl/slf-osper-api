@@ -102,13 +102,8 @@ public class StationServiceImpl implements StationService {
         timeserieInfo.setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
 
         try {
-            //ToDo: use View
             jacksonObjectMapper.writerWithView(JsonViews.Osper.class);
             String tsInfo = jacksonObjectMapper.writerWithView(JsonViews.Osper.class).writeValueAsString(timeserieInfo);
-//            IOUtils.toInputStream(tsInfo);
-//
-//
-//            timeseriesService.getDataStream(timeserieId, query);
 
             InputStream info = IOUtils.toInputStream(tsInfo);
             InputStream dataStream = timeseriesService.getDataStream(timeserieId, query);
