@@ -1,7 +1,8 @@
-package ch.epfl.cryos.osper.api.model;
+package ch.epfl.cryos.osper.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * Created by kryvych on 09/01/17.
@@ -11,7 +12,11 @@ public class Group {
 
     @JsonIgnore
     private Long id;
+
+    @JsonView(JsonViews.Osper.class)
     private String code;
+
+    @JsonView(JsonViews.Osper.class)
     private String description;
 
     private Group() {

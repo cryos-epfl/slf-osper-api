@@ -1,4 +1,4 @@
-package ch.epfl.cryos.osper.api.configuration;
+package ch.epfl.cryos.osper.api.service;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,13 +12,13 @@ import java.util.stream.Collectors;
  * Created by kryvych on 12/01/17.
  */
 @Component
-public class StationApiProperties {
+public class StationURLBuilder {
 
     private final String stationApiUrl;
 
 
     @Inject
-    public StationApiProperties(@Value("${rest.url.station}") String stationApiUrl) {
+    public StationURLBuilder(@Value("${rest.url.station}") String stationApiUrl) {
         this.stationApiUrl = stationApiUrl;
     }
 
@@ -27,8 +27,11 @@ public class StationApiProperties {
     }
 
     public String getStationsOfNetworksUrl(Collection<String> networks) {
-        StringJoiner joiner = new StringJoiner(",");
         return stationApiUrl.concat("stations?network=")
                 .concat(networks.stream().collect(Collectors.joining(",")));
+    }
+
+    public String getStationByIdUrl(String stationId) {
+        return stationApiUrl.concat("stations/").concat(stationId);
     }
 }

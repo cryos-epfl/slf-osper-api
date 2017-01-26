@@ -1,16 +1,20 @@
 package ch.epfl.cryos.osper.api.service;
 
-import ch.epfl.cryos.osper.api.configuration.TimeserieApiProperties;
-import ch.epfl.cryos.osper.api.model.Group;
-import ch.epfl.cryos.osper.api.model.TimeserieJson;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import ch.epfl.cryos.osper.api.dto.Group;
+import ch.epfl.cryos.osper.api.dto.Timeserie;
+import ch.epfl.cryos.osper.api.dto.TimeserieDto;
+import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,27 +27,57 @@ public class TimeseriesService {
 
     private final RestTemplate restTemplate;
 
-    private final TimeserieApiProperties timeserieApiProperties;
+    private final TimeserieUrlBuilder timeserieUrlBuilder;
+
+    private final ResourceLoader resourceLoader;
+
+    private static final Logger log = LoggerFactory.getLogger(TimeseriesService.class);
 
     @Inject
-    public TimeseriesService(RestTemplate restTemplate, TimeserieApiProperties timeserieApiProperties) {
+    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader) {
         this.restTemplate = restTemplate;
-        this.timeserieApiProperties = timeserieApiProperties;
+        this.timeserieUrlBuilder = timeserieUrlBuilder;
+        this.resourceLoader = resourceLoader;
     }
 
-    public Set<Group> getGroupsForStation(String stationId) {
-        ResponseEntity<List<TimeserieJson>> timeserieResponse =
-                restTemplate.exchange(timeserieApiProperties.getTimeseriesForStationUrl(stationId),
-                        HttpMethod.GET, null, new ParameterizedTypeReference<List<TimeserieJson>>() {
-                        });
-
-        List<TimeserieJson> timeseries  = timeserieResponse.getBody();
+    Set<Group> getGroupsForStation(String stationId) {
+        Set<Timeserie> timeseries = getTimeserieJsons(stationId);
 
 
         Set<Group> groups =
                 timeseries.stream()
-                        .flatMap(e->e.getTimeserie().getMeasurand().getGroups().stream())
+                        .flatMap(e->e.getMeasurand().getGroups().stream())
                         .collect(Collectors.toSet());
         return groups;
+    }
+
+    Set<Timeserie> getTimeseriesInfoForStation(String stationId) {
+        return getTimeserieJsons(stationId);
+    }
+
+    Timeserie getTimeserieInfo(String timeserieId) {
+        String timeserieInfoUrl = timeserieUrlBuilder.getTimeserieInfoUrl(timeserieId);
+        log.debug("getting timeserie info from " + timeserieInfoUrl);
+        return restTemplate.getForObject(timeserieInfoUrl, Timeserie.class);
+    }
+
+    InputStream getDataStream(String timeserieId, TimeserieQueryDto query) throws IOException {
+        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
+        log.debug("getting timeserie data from " + timeseriesDataUrl);
+
+        Resource resource = resourceLoader.getResource(timeseriesDataUrl);
+
+        InputStream inputStream = resource.getInputStream();
+        return inputStream;
+    }
+
+    public TimeserieDto getTimeserie(String timeserieId, TimeserieQueryDto query) {
+        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
+        TimeserieDto timeserieDto = restTemplate.getForObject(timeseriesDataUrl, TimeserieDto.class);
+        return timeserieDto;
+    }
+
+    private Set<Timeserie> getTimeserieJsons(String stationId) {
+        return Arrays.stream(restTemplate.getForObject(timeserieUrlBuilder.getTimeseriesForStationUrl(stationId), Timeserie[].class)).collect(Collectors.toSet());
     }
 }
