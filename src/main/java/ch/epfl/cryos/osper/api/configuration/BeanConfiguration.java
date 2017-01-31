@@ -7,8 +7,11 @@ import ch.slf.pro.common.util.localization.LocalizationServiceImpl;
 import ch.slf.pro.common.util.validator.PropertyValidator;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +20,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Contains the spring managed beans which cannot be handled by spring autodetection.
@@ -85,6 +90,17 @@ public class BeanConfiguration {
         return new GuavaModule();
     }
 
+//    @Bean
+//    public CacheManager cacheManager() {
+//        GuavaCacheManager guavaCacheManager =  new GuavaCacheManager("timeseries");
+//        guavaCacheManager.setCacheBuilder(CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES));
+//        return guavaCacheManager;
+//    }
+
+//    @Bean
+//    public CacheManager cacheManager() {
+//        return new ConcurrentMapCacheManager("tests", "stationSeries", "timeseries");
+//    }
 
 //    @Autowired
 //    public void configJackson(Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {

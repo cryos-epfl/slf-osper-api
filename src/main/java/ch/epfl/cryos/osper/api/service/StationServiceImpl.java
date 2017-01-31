@@ -1,6 +1,9 @@
 package ch.epfl.cryos.osper.api.service;
 
-import ch.epfl.cryos.osper.api.dto.*;
+import ch.epfl.cryos.osper.api.dto.Group;
+import ch.epfl.cryos.osper.api.dto.JsonViews;
+import ch.epfl.cryos.osper.api.dto.Timeserie;
+import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
@@ -77,17 +80,17 @@ public class StationServiceImpl implements StationService {
         return station;
     }
 
-    @Override
-    //ToDo:remove if it's proven not needed
-    public TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query) {
-        TimeserieDto timeserie = timeseriesService.getTimeserie(timeserieId, query);
-        Feature stationInfo = getStationInfo(timeserie.getTimeserie().getStationId().toString());
-        timeserie.getTimeserie().setStationName(stationInfo.getProperty("name"));
-        timeserie.getTimeserie().setNetwork(stationInfo.getProperty("network"));
-        timeserie.getTimeserie().setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
-
-        return timeserie;
-    }
+//    @Override
+//    //ToDo:remove if it's proven not needed
+//    public TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query) {
+//        TimeserieDto timeserie = timeseriesService.getTimeserie(timeserieId, query);
+//        Feature stationInfo = getStationInfo(timeserie.getTimeserie().getStationId().toString());
+//        timeserie.getTimeserie().setStationName(stationInfo.getProperty("name"));
+//        timeserie.getTimeserie().setNetwork(stationInfo.getProperty("network"));
+//        timeserie.getTimeserie().setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
+//
+//        return timeserie;
+//    }
 
     @Override
     public InputStream getTimeserieStreamForQuery(String timeserieId, TimeserieQueryDto query) {
@@ -96,6 +99,7 @@ public class StationServiceImpl implements StationService {
         if (timeserieInfo == null) {
             throw new IllegalArgumentException("No timeserie found with id " + timeserieId);
         }
+        //ToDo: Not all TS have station
         Feature stationInfo = getStationInfo(timeserieInfo.getStationId().toString());
         timeserieInfo.setStationName(stationInfo.getProperty("name"));
         timeserieInfo.setNetwork(stationInfo.getProperty("network"));

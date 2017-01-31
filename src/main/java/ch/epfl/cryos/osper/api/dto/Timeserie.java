@@ -1,7 +1,5 @@
 package ch.epfl.cryos.osper.api.dto;
 
-import ch.epfl.cryos.osper.api.dto.DateVariableDto;
-import ch.epfl.cryos.osper.api.dto.JsonViews;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -20,9 +18,9 @@ public class Timeserie {
     private Long id;
 
 //    @JsonIgnore
-    private Long stationId;
+    private String stationId;
 
-    private Long deviceId;
+    private String deviceId;
 
     @JsonView(JsonViews.Osper.class)
     private String deviceCode;
@@ -59,7 +57,7 @@ public class Timeserie {
     private Timeserie() {
     }
 
-    public Timeserie(Long id, Long stationId) {
+    public Timeserie(Long id, String stationId) {
         this.id = id;
         this.stationId = stationId;
     }
@@ -72,19 +70,20 @@ public class Timeserie {
         this.id = id;
     }
 
-    public Long getStationId() {
+
+    public String getStationId() {
         return stationId;
     }
 
-    public void setStationId(Long stationId) {
+    public void setStationId(String stationId) {
         this.stationId = stationId;
     }
 
-    public Long getDeviceId() {
+    public String getDeviceId() {
         return deviceId;
     }
 
-    public void setDeviceId(Long deviceId) {
+    public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
 
@@ -151,5 +150,22 @@ public class Timeserie {
 
     public void setDeviceCode(String deviceCode) {
         this.deviceCode = deviceCode;
+    }
+
+    @Override
+    public String toString() {
+        return "Timeserie{" +
+                "id=" + id +
+                ", stationId=" + stationId +
+                ", deviceId=" + deviceId +
+                ", deviceCode='" + deviceCode + '\'' +
+                ", measurand=" + measurand +
+                ", since=" + since +
+                ", until=" + until +
+                ", stationName='" + stationName + '\'' +
+                ", network='" + network + '\'' +
+                ", locationName='" + locationName + '\'' +
+                ", coordinates=" + coordinates +
+                '}';
     }
 }

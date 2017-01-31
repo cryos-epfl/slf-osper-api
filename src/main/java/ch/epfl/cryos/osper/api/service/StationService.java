@@ -15,9 +15,9 @@ public interface StationService {
 
     FeatureCollection getStations(Collection<String> networks);
 
-    Feature getStationInfo(String stationName);
+    Feature getStationInfo(String stationId);
 
-    TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query);
+//    TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query);
 
     InputStream getTimeserieStreamForQuery(String timeserieId, TimeserieQueryDto query);
 }

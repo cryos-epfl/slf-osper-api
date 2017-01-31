@@ -2,7 +2,6 @@ package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
-import ch.epfl.cryos.osper.api.dto.TimeserieDto;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -31,17 +29,21 @@ public class TimeseriesService {
 
     private final ResourceLoader resourceLoader;
 
+    private final TimeseriesCache timeseriesCache;
+
+
     private static final Logger log = LoggerFactory.getLogger(TimeseriesService.class);
 
     @Inject
-    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader) {
+    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader, TimeseriesCache timeseriesCache) {
         this.restTemplate = restTemplate;
         this.timeserieUrlBuilder = timeserieUrlBuilder;
         this.resourceLoader = resourceLoader;
+        this.timeseriesCache = timeseriesCache;
     }
 
     Set<Group> getGroupsForStation(String stationId) {
-        Set<Timeserie> timeseries = getTimeserieJsons(stationId);
+        Collection<Timeserie> timeseries = getTimeseriesInfoForStation(stationId);
 
 
         Set<Group> groups =
@@ -51,8 +53,8 @@ public class TimeseriesService {
         return groups;
     }
 
-    Set<Timeserie> getTimeseriesInfoForStation(String stationId) {
-        return getTimeserieJsons(stationId);
+    Collection<Timeserie> getTimeseriesInfoForStation(String stationId) {
+        return timeseriesCache.getStationTimeseries().get(stationId);
     }
 
     Timeserie getTimeserieInfo(String timeserieId) {
@@ -71,13 +73,4 @@ public class TimeseriesService {
         return inputStream;
     }
 
-    public TimeserieDto getTimeserie(String timeserieId, TimeserieQueryDto query) {
-        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
-        TimeserieDto timeserieDto = restTemplate.getForObject(timeseriesDataUrl, TimeserieDto.class);
-        return timeserieDto;
-    }
-
-    private Set<Timeserie> getTimeserieJsons(String stationId) {
-        return Arrays.stream(restTemplate.getForObject(timeserieUrlBuilder.getTimeseriesForStationUrl(stationId), Timeserie[].class)).collect(Collectors.toSet());
-    }
 }

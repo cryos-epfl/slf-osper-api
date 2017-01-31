@@ -31,7 +31,6 @@ public class TimeserieUrlBuilder {
     }
 
     public String getTimeseriesDataUrl(String timeserieId, TimeserieQueryDto query) {
-        String concat = timeserieApiUrl.concat("timeseries/").concat(timeserieId);
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(timeserieApiUrl)
                 .path("timeseries/{tsID}/data")
                 // Add query parameter
@@ -40,5 +39,9 @@ public class TimeserieUrlBuilder {
                 .queryParam("limit", query.getLimit());
 
         return builder.buildAndExpand(timeserieId).toUriString();
+    }
+
+    public String getAllTimeseriesUrl() {
+        return timeserieApiUrl.concat("timeseries/");
     }
 }

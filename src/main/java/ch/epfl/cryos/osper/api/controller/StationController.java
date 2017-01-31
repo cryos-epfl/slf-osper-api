@@ -3,7 +3,6 @@ package ch.epfl.cryos.osper.api.controller;
 import ch.epfl.cryos.osper.api.ApplicationFields;
 import ch.epfl.cryos.osper.api.dto.JsonViews;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
-import ch.epfl.cryos.osper.api.dto.TimeserieDto;
 import ch.epfl.cryos.osper.api.service.StationServiceImpl;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
@@ -87,6 +86,9 @@ public class StationController {
     ) {
         return service.getStationInfo(stationId);
     }
+
+
+
 
 //    @JsonView(JsonViews.Osper.class)
 //    @ResponseStatus(value = HttpStatus.OK)

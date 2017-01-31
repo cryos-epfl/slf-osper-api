@@ -8,13 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -54,6 +51,9 @@ public class TimeseriesServiceTest {
     @Mock
     private TimeserieUrlBuilder propertiesMock;
 
+    @Mock
+    private TimeseriesCache cacheMock;
+
     @Before
     public void initSubject() {
 //        ResponseEntity<List<Timeserie>> responseEntity = new ResponseEntity<List<Timeserie>>(generateTimeseries(), HttpStatus.OK);
@@ -62,7 +62,7 @@ public class TimeseriesServiceTest {
         restTemplateMock = mock(RestTemplate.class);
         when(restTemplateMock.getForObject("url1", Timeserie[].class)).thenReturn(generateTimeseries());
 
-        subject = new TimeseriesService(restTemplateMock, propertiesMock, null);
+        subject = new TimeseriesService(restTemplateMock, propertiesMock, null, cacheMock);
 
     }
 
@@ -77,18 +77,18 @@ public class TimeseriesServiceTest {
 
     private Timeserie[] generateTimeseries() {
 
-        Timeserie ts1 = new Timeserie(11l, 1l);
+        Timeserie ts1 = new Timeserie(11l, "1");
         DateVariableDto.Measurand measurand1 = new DateVariableDto.Measurand(1l, "TA_30");
         measurand1.addGroup(new Group(1l, "TA", "air temp"));
         ts1.setMeasurand(measurand1);
 
-        Timeserie ts2 = new Timeserie(22l, 1l);
+        Timeserie ts2 = new Timeserie(22l, "1");
         DateVariableDto.Measurand measurand2 = new DateVariableDto.Measurand(2l, "TA_60");
         measurand2.addGroup(new Group(1l, "TA", "air temp"));
         ts2.setMeasurand(measurand2);
 
 
-        Timeserie ts3 = new Timeserie(33l, 1l);
+        Timeserie ts3 = new Timeserie(33l, "1");
         DateVariableDto.Measurand measurand3 = new DateVariableDto.Measurand(3l, "HU_30");
         measurand3.addGroup(new Group(1l, "HU", "humidity"));
         ts3.setMeasurand(measurand3);
