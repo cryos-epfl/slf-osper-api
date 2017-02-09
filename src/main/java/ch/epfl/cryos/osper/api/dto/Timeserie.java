@@ -1,6 +1,8 @@
 package ch.epfl.cryos.osper.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.geojson.LngLatAlt;
@@ -26,11 +28,18 @@ public class Timeserie {
     private String deviceCode;
 
     @JsonView(JsonViews.Osper.class)
-    private DateVariableDto.Measurand measurand;
+    @JsonUnwrapped
+    private Measurand measurand;
 
+    @JsonView(JsonViews.Osper.class)
     private Date since;
 
+    @JsonView(JsonViews.Osper.class)
+    @JsonInclude
     private Date until;
+
+    @JsonView(JsonViews.Osper.class)
+    private int sequenceNumber;
 
     @JsonView(JsonViews.Osper.class)
     private String stationName;
@@ -87,11 +96,11 @@ public class Timeserie {
         this.deviceId = deviceId;
     }
 
-    public DateVariableDto.Measurand getMeasurand() {
+    public Measurand getMeasurand() {
         return measurand;
     }
 
-    public void setMeasurand(DateVariableDto.Measurand measurand) {
+    public void setMeasurand(Measurand measurand) {
         this.measurand = measurand;
     }
 
@@ -150,6 +159,14 @@ public class Timeserie {
 
     public void setDeviceCode(String deviceCode) {
         this.deviceCode = deviceCode;
+    }
+
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
     }
 
     @Override

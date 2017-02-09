@@ -22,16 +22,20 @@ public class StationURLBuilder {
         this.stationApiUrl = stationApiUrl;
     }
 
-    public String getAllStationsUrl() {
+    String getAllStationsUrl() {
         return stationApiUrl.concat("stations");
     }
 
-    public String getStationsOfNetworksUrl(Collection<String> networks) {
+    String getStationsOfNetworksUrl(Collection<String> networks) {
         return stationApiUrl.concat("stations?network=")
                 .concat(networks.stream().collect(Collectors.joining(",")));
     }
 
-    public String getStationByIdUrl(String stationId) {
+    String getStationByIdUrl(String stationId) {
         return stationApiUrl.concat("stations/").concat(stationId);
+    }
+
+    String getNetworksUrl() {
+        return stationApiUrl.concat("networks");
     }
 }

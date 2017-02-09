@@ -1,9 +1,12 @@
 package ch.epfl.cryos.osper.api.controller;
 
 import ch.epfl.cryos.osper.api.ApplicationFields;
+import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.JsonViews;
+import ch.epfl.cryos.osper.api.dto.Network;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import ch.epfl.cryos.osper.api.service.StationServiceImpl;
+import ch.epfl.cryos.osper.api.service.TimeseriesService;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
@@ -18,8 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Set;
 
 import static ch.slf.pro.common.util.time.ISOTimeFormat.ZONED_DATE_TIME;
@@ -37,6 +42,9 @@ public class StationController {
     @Autowired
     private StationServiceImpl service;
 
+    @Autowired
+    private TimeseriesService timeseriesService;
+
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(
             value = "stations",
@@ -44,10 +52,28 @@ public class StationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get data", notes = "Returns station metadata in GeoJSON format. ", response = String.class)
 
-    public FeatureCollection getAllStations(@RequestParam(value = "networks", required = false) Set<String> networks) {
+    public FeatureCollection getAllStations(
+            @RequestParam(value = "networks", required = false) Set<String> networks
+    ) {
+
         return service.getStations(networks);
     }
 
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(
+            value = "stations/name={stationName}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get data", notes = "Returns station metadata in GeoJSON format. ", response = String.class)
+
+    public Feature getStationByName(
+            @PathVariable(value = "stationName") @ApiParam(value = "Station name in format 'network::stationName", required = true) String stationName
+    ) {
+
+            return service.getStationInfoByName(stationName);
+
+    }
 
     @JsonView(JsonViews.Osper.class)
     @ResponseStatus(value = HttpStatus.OK)
@@ -86,6 +112,29 @@ public class StationController {
     ) {
         return service.getStationInfo(stationId);
     }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(
+            value = "groups",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get data", notes = "List all groups ", response = String.class)
+
+    public List<Group> getGroups() {
+        return timeseriesService.getAllGroups();
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(
+            value = "networks",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get data", notes = "List all networks ", response = String.class)
+
+    public List<Network> getNetworks() {
+        return service.getAllNetworks();
+    }
+
 
 
 

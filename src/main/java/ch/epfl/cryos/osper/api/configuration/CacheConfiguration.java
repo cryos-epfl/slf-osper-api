@@ -1,4 +1,4 @@
-package ch.epfl.cryos.osper.api.service;
+package ch.epfl.cryos.osper.api.configuration;
 
 import com.google.common.cache.CacheBuilder;
 import org.slf4j.LoggerFactory;
@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfiguration implements CachingConfigurer {
 
     public final static String TIMESERIE_CACHE = "timeseries";
+    public final static String STATION_BY_NAME_CACHE = "stationByName";
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(CacheConfiguration.class);
 
@@ -39,8 +40,11 @@ public class CacheConfiguration implements CachingConfigurer {
         GuavaCache cache1 = new GuavaCache(TIMESERIE_CACHE, CacheBuilder.newBuilder()
                 .expireAfterWrite(60, TimeUnit.MINUTES)
                 .build());
+        GuavaCache cache2 = new GuavaCache(STATION_BY_NAME_CACHE, CacheBuilder.newBuilder()
+                .expireAfterWrite(60, TimeUnit.MINUTES)
+                .build());
 
-        cacheManager.setCaches(Arrays.asList(cache1));
+        cacheManager.setCaches(Arrays.asList(cache1, cache2));
 
         return cacheManager;
     }

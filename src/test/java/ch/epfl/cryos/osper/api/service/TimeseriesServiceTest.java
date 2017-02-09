@@ -2,6 +2,7 @@ package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.dto.DateVariableDto;
 import ch.epfl.cryos.osper.api.dto.Group;
+import ch.epfl.cryos.osper.api.dto.Measurand;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
 import org.junit.Before;
 import org.junit.Test;
@@ -78,18 +79,18 @@ public class TimeseriesServiceTest {
     private Timeserie[] generateTimeseries() {
 
         Timeserie ts1 = new Timeserie(11l, "1");
-        DateVariableDto.Measurand measurand1 = new DateVariableDto.Measurand(1l, "TA_30");
+        Measurand measurand1 = new Measurand(1l, "TA_30");
         measurand1.addGroup(new Group(1l, "TA", "air temp"));
         ts1.setMeasurand(measurand1);
 
         Timeserie ts2 = new Timeserie(22l, "1");
-        DateVariableDto.Measurand measurand2 = new DateVariableDto.Measurand(2l, "TA_60");
+        Measurand measurand2 = new Measurand(2l, "TA_60");
         measurand2.addGroup(new Group(1l, "TA", "air temp"));
         ts2.setMeasurand(measurand2);
 
 
         Timeserie ts3 = new Timeserie(33l, "1");
-        DateVariableDto.Measurand measurand3 = new DateVariableDto.Measurand(3l, "HU_30");
+        Measurand measurand3 = new Measurand(3l, "HU_30");
         measurand3.addGroup(new Group(1l, "HU", "humidity"));
         ts3.setMeasurand(measurand3);
 

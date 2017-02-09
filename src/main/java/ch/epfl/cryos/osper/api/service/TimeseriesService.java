@@ -54,7 +54,7 @@ public class TimeseriesService {
     }
 
     Collection<Timeserie> getTimeseriesInfoForStation(String stationId) {
-        return timeseriesCache.getStationTimeseries().get(stationId);
+        return timeseriesCache.timeseriesByStationId().get(stationId);
     }
 
     Timeserie getTimeserieInfo(String timeserieId) {
@@ -72,5 +72,11 @@ public class TimeseriesService {
         InputStream inputStream = resource.getInputStream();
         return inputStream;
     }
+
+    public List<Group> getAllGroups() {
+         return Arrays.asList(restTemplate.getForObject(timeserieUrlBuilder.getAllGroupsUrl(), Group[].class));
+
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package ch.epfl.cryos.osper.api.controller;
 
-import ch.epfl.cryos.osper.api.service.CacheConfiguration;
+import ch.epfl.cryos.osper.api.configuration.CacheConfiguration;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

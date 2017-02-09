@@ -1,5 +1,6 @@
 package ch.epfl.cryos.osper.api.service;
 
+import ch.epfl.cryos.osper.api.configuration.CacheConfiguration;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
@@ -33,7 +34,7 @@ public class TimeseriesCache{
 
 
     @Cacheable(value = CacheConfiguration.TIMESERIE_CACHE, key = "#root.method.name")
-    public Multimap<String, Timeserie> getStationTimeseries() {
+    public Multimap<String, Timeserie> timeseriesByStationId() {
         log.debug("Loading ALL timeserie info");
         List<Timeserie> timeseries = Arrays.stream(restTemplate.getForObject(timeserieUrlBuilder.getAllTimeseriesUrl(), Timeserie[].class)).collect(Collectors.toList());
         List<Timeserie> tsWithStations = timeseries.stream().filter(p -> p.getStationId() != null).collect(Collectors.toList());

@@ -44,4 +44,8 @@ public class TimeserieUrlBuilder {
     public String getAllTimeseriesUrl() {
         return timeserieApiUrl.concat("timeseries/");
     }
+
+    public String getAllGroupsUrl() {
+        return timeserieApiUrl.concat("/groups");
+    }
 }

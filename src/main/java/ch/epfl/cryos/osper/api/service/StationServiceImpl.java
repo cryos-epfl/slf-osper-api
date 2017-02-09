@@ -1,9 +1,6 @@
 package ch.epfl.cryos.osper.api.service;
 
-import ch.epfl.cryos.osper.api.dto.Group;
-import ch.epfl.cryos.osper.api.dto.JsonViews;
-import ch.epfl.cryos.osper.api.dto.Timeserie;
-import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
+import ch.epfl.cryos.osper.api.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
@@ -20,10 +17,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by kryvych on 12/01/17.
@@ -41,12 +35,15 @@ public class StationServiceImpl implements StationService {
 
     private final ObjectMapper jacksonObjectMapper;
 
+    private final StationCache stationCache;
+
     @Inject
-    public StationServiceImpl(RestTemplate restTemplate, StationURLBuilder stationURLBuilder, TimeseriesService timeseriesService, ObjectMapper jacksonObjectMapper) {
+    public StationServiceImpl(RestTemplate restTemplate, StationURLBuilder stationURLBuilder, TimeseriesService timeseriesService, ObjectMapper jacksonObjectMapper, StationCache stationCache) {
         this.restTemplate = restTemplate;
         this.stationURLBuilder = stationURLBuilder;
         this.timeseriesService = timeseriesService;
         this.jacksonObjectMapper = jacksonObjectMapper;
+        this.stationCache = stationCache;
     }
 
     @Override
@@ -80,6 +77,17 @@ public class StationServiceImpl implements StationService {
         return station;
     }
 
+    @Override
+    public Feature getStationInfoByName(String name) {
+
+        Map<String, Feature> stationByName = stationCache.getStationByName();
+        Feature station = stationByName.get(name.toUpperCase());
+        if (station != null) {
+            station.setProperty("timeseries", timeseriesService.getTimeseriesInfoForStation(getStationId(station)));
+        }
+        return station;
+    }
+
 //    @Override
 //    //ToDo:remove if it's proven not needed
 //    public TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query) {
@@ -100,10 +108,14 @@ public class StationServiceImpl implements StationService {
             throw new IllegalArgumentException("No timeserie found with id " + timeserieId);
         }
         //ToDo: Not all TS have station
-        Feature stationInfo = getStationInfo(timeserieInfo.getStationId().toString());
-        timeserieInfo.setStationName(stationInfo.getProperty("name"));
-        timeserieInfo.setNetwork(stationInfo.getProperty("network"));
-        timeserieInfo.setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
+        String stationId = timeserieInfo.getStationId();
+
+        if (stationId != null) {
+            Feature stationInfo = getStationInfo(stationId.toString());
+            timeserieInfo.setStationName(stationInfo.getProperty("name"));
+            timeserieInfo.setNetwork(stationInfo.getProperty("network"));
+            timeserieInfo.setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
+        }
 
         try {
             jacksonObjectMapper.writerWithView(JsonViews.Osper.class);
@@ -123,6 +135,12 @@ public class StationServiceImpl implements StationService {
             log.error("Cannot access timeseries data", e);
             throw new IllegalStateException(e);
         }
+    }
+
+    @Override
+    public List<Network> getAllNetworks() {
+        return Arrays.asList(
+                restTemplate.getForObject(stationURLBuilder.getNetworksUrl(), Network[].class));
     }
 
     private String getStationId(Feature feature) {
