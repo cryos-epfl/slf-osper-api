@@ -1,6 +1,7 @@
 package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.dto.Group;
+import ch.epfl.cryos.osper.api.dto.Measurement;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import org.slf4j.Logger;
@@ -77,6 +78,5 @@ public class TimeseriesService {
          return Arrays.asList(restTemplate.getForObject(timeserieUrlBuilder.getAllGroupsUrl(), Group[].class));
 
     }
-
 
 }

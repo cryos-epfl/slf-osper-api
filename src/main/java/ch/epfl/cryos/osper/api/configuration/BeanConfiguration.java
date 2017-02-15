@@ -1,5 +1,9 @@
 package ch.epfl.cryos.osper.api.configuration;
 
+import ch.epfl.cryos.osper.api.dto.Measurement;
+import ch.epfl.cryos.osper.api.dto.MeasurementDeserializer;
+import ch.epfl.cryos.osper.api.service.MeasurementTableBuilder;
+import ch.epfl.cryos.osper.api.util.CsvMessageConverter;
 import ch.slf.pro.common.util.converter.ConverterConfiguration;
 import ch.slf.pro.common.util.exception.handler.demo.ExceptionDemoConfig;
 import ch.slf.pro.common.util.localization.LocalizationService;
@@ -10,6 +14,7 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.google.common.cache.CacheBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.guava.GuavaCacheManager;
 import org.springframework.context.MessageSource;
@@ -18,9 +23,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,7 +44,7 @@ import java.util.concurrent.TimeUnit;
         ExceptionDemoConfig.class
 })
 //@Import(ExceptionDemoConfig.class)
-public class BeanConfiguration {
+public class BeanConfiguration extends WebMvcConfigurerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(BeanConfiguration.class);
 
@@ -84,11 +94,20 @@ public class BeanConfiguration {
     }
 
 
-
     @Bean
     public Module guavaModule() {
         return new GuavaModule();
     }
+
+    @Bean
+    public DateTimeFormatter dateTimeFormatter() {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    }
+
+//    @Autowired
+//    public void configJackson(Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+//        jackson2ObjectMapperBuilder.deserializerByType(Measurement.class, new MeasurementDeserializer(dateTimeFormatter()));
+//    }
 
 //    @Bean
 //    public CacheManager cacheManager() {
@@ -108,4 +127,9 @@ public class BeanConfiguration {
 //    }
 
 
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        super.configureMessageConverters(converters);
+        converters.add(new CsvMessageConverter());
+    }
 }

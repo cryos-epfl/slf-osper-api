@@ -43,5 +43,4 @@ public class
 		SpringApplication.run(Application.class, args);
 	}
 
-
 }

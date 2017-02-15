@@ -24,6 +24,7 @@ public class ApplicationFields {
 
     public static final String REST_MAPPING_COMPONENT_INFO = "/info";
     public static final String REST_OSPER = "/osper";
+    public static final String REST_OSPER_MEASUREMENTS = "/osper/measurements";
     public static final String REST_MAPPING_EXCEPTION = "exception";
     public static final String REST_DATA = "/data";
 
