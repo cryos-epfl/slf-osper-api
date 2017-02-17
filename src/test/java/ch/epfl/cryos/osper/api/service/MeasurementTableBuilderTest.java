@@ -42,32 +42,32 @@ public class MeasurementTableBuilderTest {
         subject.addMeasurements(getMeasurements().get(0));
         subject.addMeasurements(getMeasurements().get(1));
 
-        SortedMap<LocalDateTime, List<BigDecimal>> result = subject.build();
+        SortedMap<LocalDateTime, String[]> result = subject.build();
 
         assertThat(result.size(), is(3));
-        assertThat(result.get(DATES[0]).size(), is(2));
-        assertThat(result.get(DATES[0]).get(0), is(BigDecimal.valueOf(12)));
-        assertThat(result.get(DATES[0]).get(1), is(BigDecimal.valueOf(15)));
+        assertThat(result.get(DATES[0]).length, is(2));
+        assertThat(result.get(DATES[0])[0], is(BigDecimal.valueOf(12)));
+        assertThat(result.get(DATES[0])[1], is(BigDecimal.valueOf(15)));
 
-        assertThat(result.get(DATES[1]).size(), is(2));
-        assertThat(result.get(DATES[1]).get(0), is(BigDecimal.valueOf(13)));
-        assertThat(result.get(DATES[1]).get(1), nullValue());
+        assertThat(result.get(DATES[1]).length, is(2));
+        assertThat(result.get(DATES[1])[0], is(BigDecimal.valueOf(13)));
+        assertThat(result.get(DATES[1])[1], nullValue());
 
-        assertThat(result.get(DATES[2]).size(), is(2));
-        assertThat(result.get(DATES[2]).get(0), is(nullValue()));
-        assertThat(result.get(DATES[2]).get(1), is(BigDecimal.valueOf(19)));
+        assertThat(result.get(DATES[2]).length, is(2));
+        assertThat(result.get(DATES[2])[0], is(nullValue()));
+        assertThat(result.get(DATES[2])[0], is(BigDecimal.valueOf(19)));
     }
 
 
     private List<List<Measurement>> getMeasurements() {
         List<Measurement> measurements1 = Lists.newArrayList(
-                new Measurement(DATES[0], BigDecimal.valueOf(12))
-                , new Measurement(DATES[1], BigDecimal.valueOf(13))
+                new Measurement(DATES[0], String.valueOf(12))
+                , new Measurement(DATES[1], String.valueOf(13))
         );
 
         List<Measurement> measurements2 = Lists.newArrayList(
-                new Measurement(DATES[0], BigDecimal.valueOf(15))
-                , new Measurement(DATES[2], BigDecimal.valueOf(19))
+                new Measurement(DATES[0], String.valueOf(15))
+                , new Measurement(DATES[2], String.valueOf(19))
         );
 
         return Lists.newArrayList(measurements1, measurements2);

@@ -42,8 +42,8 @@ public class StationController {
     @Autowired
     private StationServiceImpl service;
 
-    @Autowired
-    private TimeseriesService timeseriesService;
+//    @Autowired
+//    private TimeseriesService timeseriesService;
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(
@@ -121,7 +121,7 @@ public class StationController {
     @ApiOperation(value = "Get data", notes = "List all groups ", response = String.class)
 
     public List<Group> getGroups() {
-        return timeseriesService.getAllGroups();
+        return service.getAllGroups();
     }
 
     @ResponseStatus(value = HttpStatus.OK)

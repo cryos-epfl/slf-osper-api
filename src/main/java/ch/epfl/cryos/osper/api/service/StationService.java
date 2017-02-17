@@ -1,5 +1,6 @@
 package ch.epfl.cryos.osper.api.service;
 
+import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Network;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import org.geojson.Feature;
@@ -26,4 +27,5 @@ public interface StationService {
 
     List<Network> getAllNetworks();
 
+    List<Group> getAllGroups();
 }

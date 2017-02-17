@@ -13,9 +13,9 @@ import java.util.Date;
 public class Measurement {
 
     private LocalDateTime date;
-    private BigDecimal value;
+    private String value;
 
-    public Measurement(LocalDateTime date, BigDecimal value) {
+    public Measurement(LocalDateTime date, String value) {
         this.date = date;
         this.value = value;
     }
@@ -24,7 +24,7 @@ public class Measurement {
         return date;
     }
 
-    public BigDecimal getValue() {
+    public String getValue() {
         return value;
     }
 }

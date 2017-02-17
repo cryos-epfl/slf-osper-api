@@ -6,15 +6,12 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.fasterxml.jackson.databind.node.ValueNode;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import java.io.IOException;
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -52,10 +49,9 @@ public class MeasurementDeserializer extends StdDeserializer<Measurement> {
         LocalDateTime dateTime = LocalDateTime.parse(dateString, formatter);
 
         TreeNode numberNode = treeNode.get(1);
-        BigDecimal value = null;
-        if (numberNode instanceof NumericNode) {
-            value = ((NumericNode) numberNode).decimalValue();
-        }
+
+         String  value = ((ValueNode) numberNode).asText();
+
         return new Measurement(dateTime, value);
     }
 

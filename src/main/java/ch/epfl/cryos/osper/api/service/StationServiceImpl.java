@@ -143,6 +143,12 @@ public class StationServiceImpl implements StationService {
                 restTemplate.getForObject(stationURLBuilder.getNetworksUrl(), Network[].class));
     }
 
+    @Override
+    public List<Group> getAllGroups() {
+        return timeseriesService.getAllGroups();
+    }
+
+
     private String getStationId(Feature feature) {
         return feature.getProperty("id").toString();
     }

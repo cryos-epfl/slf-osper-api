@@ -6,6 +6,7 @@ import ch.epfl.cryos.osper.api.dto.Timeserie;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,15 +36,17 @@ public class TimeseriesService {
 
     private final TimeseriesCache timeseriesCache;
 
+    private final MeasurementCsvWriter csvWriter;
 
     private static final Logger log = LoggerFactory.getLogger(TimeseriesService.class);
 
     @Inject
-    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader, TimeseriesCache timeseriesCache) {
+    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader, TimeseriesCache timeseriesCache, MeasurementCsvWriter csvWriter) {
         this.restTemplate = restTemplate;
         this.timeserieUrlBuilder = timeserieUrlBuilder;
         this.resourceLoader = resourceLoader;
         this.timeseriesCache = timeseriesCache;
+        this.csvWriter = csvWriter;
     }
 
     Set<Group> getGroupsForStation(String stationId) {
@@ -79,4 +85,26 @@ public class TimeseriesService {
 
     }
 
+    public void writeCsvToStream(List<String> tsIds, TimeserieQueryDto query, OutputStream outputStream) throws IOException {
+        MeasurementTableBuilder builder = getMeasurementTableBuilder();
+        builder.withColumnNumber(tsIds.size());
+        for (String tsId : tsIds) {
+            builder.addMeasurements(getMeasurements(tsId, query));
+        }
+        SortedMap<LocalDateTime, String[]> data = builder.build();
+        tsIds.add(0, "TIMESTAMP");
+        csvWriter.write(data, tsIds.toArray(new String[tsIds.size()]), outputStream);
+
+    }
+
+    List<Measurement> getMeasurements(String timeserieId, TimeserieQueryDto query) {
+        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
+
+        return Arrays.asList(restTemplate.getForObject(timeseriesDataUrl, Measurement[].class));
+    }
+
+    @Lookup
+    MeasurementTableBuilder getMeasurementTableBuilder() {
+        return null;
+    }
 }

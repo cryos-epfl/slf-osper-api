@@ -1,6 +1,5 @@
 package ch.epfl.cryos.osper.api.service;
 
-import ch.epfl.cryos.osper.api.dto.DateVariableDto;
 import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Measurand;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
@@ -55,6 +54,9 @@ public class TimeseriesServiceTest {
     @Mock
     private TimeseriesCache cacheMock;
 
+    @Mock
+    private MeasurementCsvWriter csvWriterMock;
+
     @Before
     public void initSubject() {
 //        ResponseEntity<List<Timeserie>> responseEntity = new ResponseEntity<List<Timeserie>>(generateTimeseries(), HttpStatus.OK);
@@ -63,7 +65,7 @@ public class TimeseriesServiceTest {
         restTemplateMock = mock(RestTemplate.class);
         when(restTemplateMock.getForObject("url1", Timeserie[].class)).thenReturn(generateTimeseries());
 
-        subject = new TimeseriesService(restTemplateMock, propertiesMock, null, cacheMock);
+        subject = new TimeseriesService(restTemplateMock, propertiesMock, null, cacheMock, csvWriterMock);
 
     }
 
