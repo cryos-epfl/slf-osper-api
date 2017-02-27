@@ -6,7 +6,6 @@ import ch.epfl.cryos.osper.api.dto.JsonViews;
 import ch.epfl.cryos.osper.api.dto.Network;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import ch.epfl.cryos.osper.api.service.StationServiceImpl;
-import ch.epfl.cryos.osper.api.service.TimeseriesService;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
@@ -14,20 +13,17 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
-
-import static ch.slf.pro.common.util.time.ISOTimeFormat.ZONED_DATE_TIME;
 
 /**
  * Created by kryvych on 30/09/16.
@@ -39,8 +35,14 @@ public class StationController {
 
     private static final Logger log = LoggerFactory.getLogger(StationController.class);
 
-    @Autowired
-    private StationServiceImpl service;
+    private final static String DATE_TIME_FORMATS = "2016-11-17 or 2016-11-17T13:00Z or 2016-11-17T13:00:00Z";
+
+    private final StationServiceImpl service;
+
+    @Inject
+    public StationController(StationServiceImpl service) {
+        this.service = service;
+    }
 
 //    @Autowired
 //    private TimeseriesService timeseriesService;
@@ -83,8 +85,8 @@ public class StationController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get data", notes = "Returns timeserie metadata and data JSON format. ", response = String.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "from", value = "Start of the timespan " + ZONED_DATE_TIME, required = false, paramType = "query", defaultValue = "2016-11-17T13:00Z"),
-            @ApiImplicitParam(name = "until", value = "End of the timespan " + ZONED_DATE_TIME, required = false, paramType = "query", defaultValue = "2017-01-05T13:00Z"),
+            @ApiImplicitParam(name = "from", value = "Start of the timespan " + DATE_TIME_FORMATS, required = false, paramType = "query", defaultValue = "2016-11-17T13:00Z"),
+            @ApiImplicitParam(name = "until", value = "End of the timespan " + DATE_TIME_FORMATS, required = false, paramType = "query", defaultValue = "2016-11-17T18:00Z"),
             @ApiImplicitParam(name = "limit", value = "Row number limit ", required = false, paramType = "query")
     })
     public void getTimeserieStremById(

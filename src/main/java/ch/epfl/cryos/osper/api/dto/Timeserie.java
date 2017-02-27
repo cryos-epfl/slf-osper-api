@@ -32,6 +32,9 @@ public class Timeserie {
     private Measurand measurand;
 
     @JsonView(JsonViews.Osper.class)
+    private String measureInterval;
+
+    @JsonView(JsonViews.Osper.class)
     private Date since;
 
     @JsonView(JsonViews.Osper.class)
@@ -43,13 +46,6 @@ public class Timeserie {
 
     @JsonView(JsonViews.Osper.class)
     private String stationName;
-
-//    "locationName": "Allières",
-//            "coordinates": [
-//            7.281216563,
-//            47.036349391,
-//            490
-//            ]
 
     @JsonView(JsonViews.Osper.class)
     private String network;
@@ -167,6 +163,14 @@ public class Timeserie {
 
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
+    }
+
+    public String getMeasureInterval() {
+        return measureInterval;
+    }
+
+    public void setMeasureInterval(String measureInterval) {
+        this.measureInterval = measureInterval;
     }
 
     @Override

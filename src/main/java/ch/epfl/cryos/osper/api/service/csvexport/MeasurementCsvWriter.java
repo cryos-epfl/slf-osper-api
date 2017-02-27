@@ -1,19 +1,18 @@
-package ch.epfl.cryos.osper.api.service;
+package ch.epfl.cryos.osper.api.service.csvexport;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import ch.epfl.cryos.osper.api.util.CsvRecord;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -35,7 +34,7 @@ public class MeasurementCsvWriter {
         this.quote = quote;
     }
 
-     void write(Map<LocalDateTime, String[]> data, String[] headers, OutputStream outputStream) throws IOException {
+     public void write(Map<LocalDateTime, String[]> data, String[] headers, OutputStream outputStream) throws IOException {
 
         try (CSVWriter out = new CSVWriter(new OutputStreamWriter(outputStream, UTF_8),
                 separator, quote)) {
@@ -43,32 +42,17 @@ public class MeasurementCsvWriter {
             if (headers != null) {
                 out.writeNext(headers);
             }
-            data.entrySet().stream().forEachOrdered(rec -> {
+            data.entrySet().forEach(rec -> {
 
                 out.writeNext(new MeasurementCsvRecord(rec.getKey(), rec.getValue()).toStringArray());
 
                 try {
                     out.flush();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    throw new UncheckedIOException(e);
                 }
 
-
             });
-        }
-    }
-
-    void writeDate(Map<LocalDateTime, List<BigDecimal>> data, String[] headers, OutputStream outputStream) throws IOException {
-        try (CSVWriter out = new CSVWriter(new OutputStreamWriter(outputStream, UTF_8),
-                separator, quote)) {
-
-            if (headers != null) {
-                out.writeNext(headers);
-            }
-
-
-//            MeasurementCsvRecord record = new MeasurementCsvRecord();
-
         }
     }
 

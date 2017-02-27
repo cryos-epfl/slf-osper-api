@@ -1,6 +1,7 @@
-package ch.epfl.cryos.osper.api.service;
+package ch.epfl.cryos.osper.api.service.csvexport;
 
 import ch.epfl.cryos.osper.api.dto.Measurement;
+import ch.epfl.cryos.osper.api.service.csvexport.MeasurementTableBuilder;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +16,6 @@ import java.util.SortedMap;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 
 /**
  * Created by kryvych on 10/02/17.

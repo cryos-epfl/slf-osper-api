@@ -1,11 +1,9 @@
-package ch.epfl.cryos.osper.api.service;
+package ch.epfl.cryos.osper.api.service.csvexport;
 
 import ch.epfl.cryos.osper.api.dto.Measurement;
-import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -38,14 +36,14 @@ public class MeasurementTableBuilder {
         System.out.println("MeasurementTableBuilder.MeasurementTableBuilder: " + this);
     }
 
-     MeasurementTableBuilder withColumnNumber(int columnNumber) {
+     public MeasurementTableBuilder withColumnNumber(int columnNumber) {
         result = new TreeMap<>();
         this.columnsNumber = columnNumber;
         this.collector = new MapListCollector<>(result, columnsNumber);
         return this;
     }
 
-     MeasurementTableBuilder addMeasurements(List<Measurement> measurements) {
+     public MeasurementTableBuilder addMeasurements(List<Measurement> measurements) {
         if (collector == null) {
             if (columnsNumber == 0) {
                 throw new IllegalStateException("need to set columnNumber >0");

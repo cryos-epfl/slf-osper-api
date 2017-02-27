@@ -1,6 +1,5 @@
 package ch.epfl.cryos.osper.api.service;
 
-import ch.epfl.cryos.osper.api.dto.TimeserieDto;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import org.junit.Before;
 import org.junit.Test;

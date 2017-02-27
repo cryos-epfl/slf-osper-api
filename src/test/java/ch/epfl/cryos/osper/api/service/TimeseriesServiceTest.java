@@ -3,6 +3,7 @@ package ch.epfl.cryos.osper.api.service;
 import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Measurand;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
+import ch.epfl.cryos.osper.api.service.csvexport.MeasurementCsvWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,5 +1,6 @@
 package ch.epfl.cryos.osper.api.configuration;
 
+import ch.epfl.cryos.osper.api.util.DateSerializer;
 import ch.slf.pro.common.util.converter.ConverterConfiguration;
 import ch.slf.pro.common.util.exception.handler.demo.ExceptionDemoConfig;
 import ch.slf.pro.common.util.localization.LocalizationService;
@@ -9,17 +10,20 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Contains the spring managed beans which cannot be handled by spring autodetection.
@@ -87,10 +91,15 @@ public class BeanConfiguration {
         return new GuavaModule();
     }
 
-    @Bean
-    public DateTimeFormatter dateTimeFormatter() {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    @Autowired
+    public void configJackson(Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
+        jackson2ObjectMapperBuilder.serializerByType(Date.class, new DateSerializer());
     }
+
+//    @Bean
+//    public DateTimeFormatter dateTimeFormatter() {
+//        return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//    }
 
 //    @Autowired
 //    public void configJackson(Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder) {
