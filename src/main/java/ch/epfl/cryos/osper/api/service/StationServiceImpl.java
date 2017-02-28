@@ -1,6 +1,7 @@
 package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.dto.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.SequenceInputStream;
 import java.util.*;
 
@@ -88,21 +90,29 @@ public class StationServiceImpl implements StationService {
         return station;
     }
 
-//    @Override
-//    //ToDo:remove if it's proven not needed
-//    public TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query) {
-//        TimeserieDto timeserie = timeseriesService.getTimeserie(timeserieId, query);
-//        Feature stationInfo = getStationInfo(timeserie.getTimeserie().getStationId().toString());
-//        timeserie.getTimeserie().setStationName(stationInfo.getProperty("name"));
-//        timeserie.getTimeserie().setNetwork(stationInfo.getProperty("network"));
-//        timeserie.getTimeserie().setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
-//
-//        return timeserie;
-//    }
 
     @Override
-    public InputStream getTimeserieStreamForQuery(String timeserieId, TimeserieQueryDto query) {
+    public void writeTimeserieStream(String timeserieId, TimeserieQueryDto query, OutputStream stream) {
 
+        try {
+
+            IOUtils.write("{ \"info\": ", stream);
+
+            String tsInfo = getTimeserieWithStationInfoAsString(timeserieId);
+            IOUtils.write(tsInfo, stream);
+            IOUtils.write(", \"measurements\":", stream);
+            IOUtils.copy(timeseriesService.getDataStream(timeserieId, query), stream);
+
+            IOUtils.write("}", stream);
+
+
+        } catch (IOException e) {
+            log.error("Cannot access timeseries data", e);
+            throw new IllegalStateException(e);
+        }
+    }
+
+     Timeserie getTimeserieWithStationInfo(String timeserieId) {
         Timeserie timeserieInfo = timeseriesService.getTimeserieInfo(timeserieId);
         if (timeserieInfo == null) {
             throw new IllegalArgumentException("No timeserie found with id " + timeserieId);
@@ -116,25 +126,14 @@ public class StationServiceImpl implements StationService {
             timeserieInfo.setNetwork(stationInfo.getProperty("network"));
             timeserieInfo.setCoordinates(((Point) stationInfo.getGeometry()).getCoordinates());
         }
+        return timeserieInfo;
+    }
 
-        try {
-            jacksonObjectMapper.writerWithView(JsonViews.Osper.class);
-            String tsInfo = jacksonObjectMapper.writerWithView(JsonViews.Osper.class).writeValueAsString(timeserieInfo);
+    String getTimeserieWithStationInfoAsString(String timeserieId) throws JsonProcessingException {
+        Timeserie timeserie = getTimeserieWithStationInfo(timeserieId);
+        String infoString = jacksonObjectMapper.writerWithView(JsonViews.Osper.class).writeValueAsString(timeserie);
+        return infoString;
 
-            InputStream info = IOUtils.toInputStream(tsInfo);
-            InputStream dataStream = timeseriesService.getDataStream(timeserieId, query);
-
-            InputStream infoTag = IOUtils.toInputStream("{ \"info\": ");
-            InputStream dataTag = IOUtils.toInputStream(", \"measurements\":");
-            InputStream endTag = IOUtils.toInputStream("}");
-
-
-            List<InputStream> streams = Lists.newArrayList(infoTag, info, dataTag, dataStream, endTag);
-            return new SequenceInputStream(Collections.enumeration(streams));
-        } catch (IOException e) {
-            log.error("Cannot access timeseries data", e);
-            throw new IllegalStateException(e);
-        }
     }
 
     @Override

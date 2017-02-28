@@ -8,7 +8,6 @@ import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import ch.epfl.cryos.osper.api.service.StationServiceImpl;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
-import org.apache.commons.io.IOUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.slf4j.Logger;
@@ -21,7 +20,6 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
@@ -96,9 +94,8 @@ public class StationController {
     ) throws IOException {
 
         log.debug("Get tsId=" + timeserieId + " query " + query);
-        InputStream timeserieStream = service.getTimeserieStreamForQuery(timeserieId.toString(), query);
-        IOUtils.copy(timeserieStream, response.getWriter());
 
+        service.writeTimeserieStream(timeserieId.toString(), query, response.getOutputStream());
         response.flushBuffer();
     }
 

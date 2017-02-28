@@ -7,6 +7,7 @@ import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public interface StationService {
 
     Feature getStationInfoByName(String name);
 
-    InputStream getTimeserieStreamForQuery(String timeserieId, TimeserieQueryDto query);
+    void writeTimeserieStream(String timeserieId, TimeserieQueryDto query, OutputStream stream);
 
     List<Network> getAllNetworks();
 

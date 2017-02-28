@@ -21,6 +21,8 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by kryvych on 13/01/17.
@@ -86,26 +88,4 @@ public class TimeseriesService {
 
     }
 
-    public void writeCsvToStream(List<String> tsIds, TimeserieQueryDto query, OutputStream outputStream) throws IOException {
-        MeasurementTableBuilder builder = getMeasurementTableBuilder();
-        builder.withColumnNumber(tsIds.size());
-        for (String tsId : tsIds) {
-            builder.addMeasurements(getMeasurements(tsId, query));
-        }
-        SortedMap<LocalDateTime, String[]> data = builder.build();
-        tsIds.add(0, "TIMESTAMP");
-        csvWriter.write(data, tsIds.toArray(new String[tsIds.size()]), outputStream);
-
-    }
-
-    List<Measurement> getMeasurements(String timeserieId, TimeserieQueryDto query) {
-        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
-
-        return Arrays.asList(restTemplate.getForObject(timeseriesDataUrl, Measurement[].class));
-    }
-
-    @Lookup
-    MeasurementTableBuilder getMeasurementTableBuilder() {
-        return null;
-    }
 }
