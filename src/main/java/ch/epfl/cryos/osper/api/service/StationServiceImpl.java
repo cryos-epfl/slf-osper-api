@@ -85,7 +85,7 @@ public class StationServiceImpl implements StationService {
         Map<String, Feature> stationByName = stationCache.getStationByName();
         Feature station = stationByName.get(name.toUpperCase());
         if (station != null) {
-            station.setProperty("timeseries", timeseriesService.getTimeseriesInfoForStation(getStationId(station)));
+            station.setProperty("timeseries", timeseriesService.getTimeseriesInfoForStation(getStationId(name)));
         }
         return station;
     }
@@ -147,6 +147,16 @@ public class StationServiceImpl implements StationService {
         return timeseriesService.getAllGroups();
     }
 
+
+    String getStationId(String stationName) {
+        Map<String, Feature> stationByName = stationCache.getStationByName();
+        Feature station = stationByName.get(stationName.toUpperCase());
+        if (station == null) {
+            throw new IllegalArgumentException("Station name " + stationName + " doesn't exist");
+        }
+        return station.getProperty("id").toString();
+
+    }
 
     private String getStationId(Feature feature) {
         return feature.getProperty("id").toString();

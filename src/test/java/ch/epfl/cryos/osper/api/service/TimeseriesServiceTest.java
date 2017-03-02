@@ -66,7 +66,7 @@ public class TimeseriesServiceTest {
         restTemplateMock = mock(RestTemplate.class);
         when(restTemplateMock.getForObject("url1", Timeserie[].class)).thenReturn(generateTimeseries());
 
-        subject = new TimeseriesService(restTemplateMock, propertiesMock, null, cacheMock, csvWriterMock);
+        subject = new TimeseriesService(restTemplateMock, propertiesMock, null, cacheMock);
 
     }
 

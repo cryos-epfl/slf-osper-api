@@ -32,11 +32,17 @@ public class TimeserieUrlBuilder {
 
     public String getTimeseriesDataUrl(String timeserieId, TimeserieQueryDto query) {
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(timeserieApiUrl)
-                .path("timeseries/{tsID}/data")
-                // Add query parameter
-                .queryParam("from", query.getFrom())
-                .queryParam("until", query.getUntil())
-                .queryParam("limit", query.getLimit());
+                .path("timeseries/{tsID}/data");
+        // Add query parameter
+        if (query.getFrom() != null) {
+            builder.queryParam("from", query.getFrom());
+        }
+        if (query.getUntil() != null) {
+            builder.queryParam("until", query.getUntil());
+        }
+        if (query.getLimit() != null) {
+            builder.queryParam("limit", query.getLimit());
+        }
 
         return builder.buildAndExpand(timeserieId).toUriString();
     }

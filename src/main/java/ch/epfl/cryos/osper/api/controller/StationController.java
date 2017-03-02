@@ -28,7 +28,7 @@ import java.util.Set;
  */
 @RestController
 @RequestMapping(ApplicationFields.REST_OSPER)
-@Api(value = "Controller for accessing station metadata data")
+@Api(value = "Controller for accessing station and timeseries metadata and data")
 public class StationController {
 
     private static final Logger log = LoggerFactory.getLogger(StationController.class);
@@ -42,8 +42,6 @@ public class StationController {
         this.service = service;
     }
 
-//    @Autowired
-//    private TimeseriesService timeseriesService;
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(

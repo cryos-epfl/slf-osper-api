@@ -1,6 +1,5 @@
 package ch.epfl.cryos.osper.api.service;
 
-import ch.epfl.cryos.osper.api.dto.Measurement;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import ch.epfl.cryos.osper.api.service.csvexport.MeasurementCsvWriter;
@@ -14,9 +13,10 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,17 +28,13 @@ public class DataDownloadService {
 
     private final MeasurementCsvWriter csvWriter;
 
-    private final RestTemplate restTemplate;
-
-    private final TimeserieUrlBuilder timeserieUrlBuilder;
-
     private final StationServiceImpl stationService;
 
+    private final TimeseriesService timeseriesService;
     @Inject
-    public DataDownloadService(MeasurementCsvWriter csvWriter, RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, StationServiceImpl stationService) {
+    public DataDownloadService(MeasurementCsvWriter csvWriter, StationServiceImpl stationService, TimeseriesService timeseriesService) {
         this.csvWriter = csvWriter;
-        this.restTemplate = restTemplate;
-        this.timeserieUrlBuilder = timeserieUrlBuilder;
+        this.timeseriesService = timeseriesService;
         this.stationService = stationService;
     }
 
@@ -46,7 +42,7 @@ public class DataDownloadService {
         MeasurementTableBuilder builder = getMeasurementTableBuilder();
         builder.withColumnNumber(tsIds.size());
         for (String tsId : tsIds) {
-            builder.addMeasurements(getMeasurements(tsId, query));
+            builder.addMeasurements(timeseriesService.getMeasurements(tsId, query));
         }
         SortedMap<LocalDateTime, String[]> data = builder.build();
         tsIds.add(0, "TIMESTAMP");
@@ -54,7 +50,7 @@ public class DataDownloadService {
 
     }
 
-    public void writeZipToStream(List<String> tsIds, TimeserieQueryDto query, ZipOutputStream zipOutputStream) throws IOException {
+    public void writeTimeseriesToZipStream(List<String> tsIds, TimeserieQueryDto query, ZipOutputStream zipOutputStream) throws IOException {
         for (String tsId : tsIds) {
             String timeserieWithStationInfo = stationService.getTimeserieWithStationInfoAsString(tsId);
             zipOutputStream.putNextEntry(new ZipEntry("info_" + tsId + ".json"));
@@ -67,11 +63,9 @@ public class DataDownloadService {
 
     }
 
-
-    List<Measurement> getMeasurements(String timeserieId, TimeserieQueryDto query) {
-        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
-
-        return Arrays.asList(restTemplate.getForObject(timeseriesDataUrl, Measurement[].class));
+    public void writeStationToZipStream(String stationName, TimeserieQueryDto query, ZipOutputStream zipOutputStream) throws IOException {
+        Collection<Timeserie> timeseries = timeseriesService.getTimeseriesInfoForStation(stationService.getStationId(stationName));
+        writeTimeseriesToZipStream(timeseries.stream().map(x -> x.getId().toString()).collect(Collectors.toList()), query, zipOutputStream);
     }
 
     @Lookup

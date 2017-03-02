@@ -39,17 +39,14 @@ public class TimeseriesService {
 
     private final TimeseriesCache timeseriesCache;
 
-    private final MeasurementCsvWriter csvWriter;
-
     private static final Logger log = LoggerFactory.getLogger(TimeseriesService.class);
 
     @Inject
-    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader, TimeseriesCache timeseriesCache, MeasurementCsvWriter csvWriter) {
+    public TimeseriesService(RestTemplate restTemplate, TimeserieUrlBuilder timeserieUrlBuilder, ResourceLoader resourceLoader, TimeseriesCache timeseriesCache) {
         this.restTemplate = restTemplate;
         this.timeserieUrlBuilder = timeserieUrlBuilder;
         this.resourceLoader = resourceLoader;
         this.timeseriesCache = timeseriesCache;
-        this.csvWriter = csvWriter;
     }
 
     Set<Group> getGroupsForStation(String stationId) {
@@ -83,9 +80,16 @@ public class TimeseriesService {
         return inputStream;
     }
 
-    public List<Group> getAllGroups() {
+     List<Group> getAllGroups() {
          return Arrays.asList(restTemplate.getForObject(timeserieUrlBuilder.getAllGroupsUrl(), Group[].class));
 
     }
+
+    List<Measurement> getMeasurements(String timeserieId, TimeserieQueryDto query) {
+        String timeseriesDataUrl = timeserieUrlBuilder.getTimeseriesDataUrl(timeserieId, query);
+        log.info(timeseriesDataUrl);
+        return Arrays.asList(restTemplate.getForObject(timeseriesDataUrl, Measurement[].class));
+    }
+
 
 }
