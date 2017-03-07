@@ -27,7 +27,7 @@ public class StationURLBuilder {
     }
 
     String getStationsOfNetworksUrl(Collection<String> networks) {
-        return stationApiUrl.concat("stations?network=")
+        return stationApiUrl.concat("stations?networks=")
                 .concat(networks.stream().collect(Collectors.joining(",")));
     }
 
