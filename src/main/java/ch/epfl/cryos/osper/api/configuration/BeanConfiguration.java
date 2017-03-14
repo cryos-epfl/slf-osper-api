@@ -1,5 +1,6 @@
 package ch.epfl.cryos.osper.api.configuration;
 
+import ch.epfl.cryos.osper.api.util.ClientErrorHandler;
 import ch.epfl.cryos.osper.api.util.DateSerializer;
 import ch.slf.pro.common.util.converter.ConverterConfiguration;
 import ch.slf.pro.common.util.exception.handler.demo.ExceptionDemoConfig;
@@ -52,6 +53,7 @@ public class BeanConfiguration {
     public RestTemplate restTemplate() {
         RestTemplate element = new RestTemplate();
         log.debug("Created element '{}'", element);
+        element.setErrorHandler(new ClientErrorHandler());
         return element;
     }
 

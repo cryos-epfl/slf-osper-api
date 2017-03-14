@@ -4,6 +4,9 @@ import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Measurand;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
 import ch.epfl.cryos.osper.api.service.csvexport.MeasurementCsvWriter;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,19 +55,12 @@ public class TimeseriesServiceTest {
     @Mock
     private TimeserieUrlBuilder propertiesMock;
 
-    @Mock
-    private TimeseriesCache cacheMock;
-
-    @Mock
-    private MeasurementCsvWriter csvWriterMock;
 
     @Before
     public void initSubject() {
-//        ResponseEntity<List<Timeserie>> responseEntity = new ResponseEntity<List<Timeserie>>(generateTimeseries(), HttpStatus.OK);
-        propertiesMock = mock(TimeserieUrlBuilder.class);
-        when(propertiesMock.getTimeseriesForStationUrl("1")).thenReturn("url1");
-        restTemplateMock = mock(RestTemplate.class);
-        when(restTemplateMock.getForObject("url1", Timeserie[].class)).thenReturn(generateTimeseries());
+
+        TimeseriesCache cacheMock = mock(TimeseriesCache.class);
+        when(cacheMock.timeseriesByStationId()).thenReturn(generateTimeseriesMap());
 
         subject = new TimeseriesService(restTemplateMock, propertiesMock, null, cacheMock);
 
@@ -99,6 +95,14 @@ public class TimeseriesServiceTest {
 
         Timeserie[] tss = {ts1, ts2, ts3};
         return tss;
+    }
+
+    private Multimap<String, Timeserie> generateTimeseriesMap() {
+        Multimap<String, Timeserie> multimap = ArrayListMultimap.create();
+        Timeserie[] timeseries = generateTimeseries();
+        multimap.putAll("1", Lists.newArrayList(timeseries));
+
+        return multimap;
     }
 
     @Configuration

@@ -6,6 +6,7 @@ import ch.epfl.cryos.osper.api.dto.JsonViews;
 import ch.epfl.cryos.osper.api.dto.Network;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import ch.epfl.cryos.osper.api.service.StationServiceImpl;
+import ch.slf.pro.common.util.exception.SlfProRuntimeException;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
 import org.geojson.Feature;
@@ -14,7 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.inject.Inject;
@@ -134,30 +137,5 @@ public class StationController {
 
 
 
-
-
-//    @JsonView(JsonViews.Osper.class)
-//    @ResponseStatus(value = HttpStatus.OK)
-//    @RequestMapping(
-//            value = "timeseries/{timeserieId}",
-//            method = RequestMethod.GET,
-//            produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ApiOperation(value = "Get data", notes = "Returns timeserie metadata and data JSON format. ", response = String.class)
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "includeData", value = "Include data", required = false, allowMultiple = false, paramType = "query", dataType = "boolean", defaultValue = "true"),
-//            @ApiImplicitParam(name = "from", value = "Start of the timespan " + ZONED_DATE_TIME, required = false, paramType = "query", defaultValue = "2016-11-17T13:00Z"),
-//            @ApiImplicitParam(name = "until", value = "End of the timespan " + ZONED_DATE_TIME, required = false, paramType = "query", defaultValue = "2017-01-05T13:00Z"),
-//            @ApiImplicitParam(name = "limit", value = "Row number limit ", required = false, paramType = "query")
-//    })
-//
-//    public TimeserieDto getTimeserieById(
-//            @PathVariable(value = "timeserieId") @ApiParam(value = "Timeserie ID", required = true) Long timeserieId,
-//            @ApiIgnore TimeserieQueryDto query
-//    ) {
-//
-//        System.out.println("!!! QUERY = " + query);
-//
-//        return service.getTimeserieForQuery(timeserieId.toString(), query);
-//    }
 
 }

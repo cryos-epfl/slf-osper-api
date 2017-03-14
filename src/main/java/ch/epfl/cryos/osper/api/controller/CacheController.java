@@ -17,7 +17,13 @@ public class CacheController {
 
     @CacheEvict(value = CacheConfiguration.TIMESERIE_CACHE, allEntries = true)
     @RequestMapping(value = "/clearTimeseriesCache", method = RequestMethod.GET)
-    public ResponseEntity<String> clearCache() {
+    public ResponseEntity<String> clearTimeseriersCache() {
+        return new ResponseEntity<String>("Cache Cleared", HttpStatus.OK);
+    }
+
+    @CacheEvict(value = CacheConfiguration.STATION_BY_NAME_CACHE, allEntries = true)
+    @RequestMapping(value = "/clearStationCache", method = RequestMethod.GET)
+    public ResponseEntity<String> clearStationCache() {
         return new ResponseEntity<String>("Cache Cleared", HttpStatus.OK);
     }
 }

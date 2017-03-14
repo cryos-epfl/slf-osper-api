@@ -46,16 +46,16 @@ public class MeasurementTableBuilderTest {
 
         assertThat(result.size(), is(3));
         assertThat(result.get(DATES[0]).length, is(2));
-        assertThat(result.get(DATES[0])[0], is(BigDecimal.valueOf(12)));
-        assertThat(result.get(DATES[0])[1], is(BigDecimal.valueOf(15)));
+        assertThat(result.get(DATES[0])[0], is("12"));
+        assertThat(result.get(DATES[0])[1], is("15"));
 
         assertThat(result.get(DATES[1]).length, is(2));
-        assertThat(result.get(DATES[1])[0], is(BigDecimal.valueOf(13)));
+        assertThat(result.get(DATES[1])[0], is("13"));
         assertThat(result.get(DATES[1])[1], nullValue());
 
         assertThat(result.get(DATES[2]).length, is(2));
         assertThat(result.get(DATES[2])[0], is(nullValue()));
-        assertThat(result.get(DATES[2])[0], is(BigDecimal.valueOf(19)));
+        assertThat(result.get(DATES[2])[1], is("19"));
     }
 
 

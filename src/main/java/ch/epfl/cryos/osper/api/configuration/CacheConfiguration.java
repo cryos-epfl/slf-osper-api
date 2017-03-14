@@ -38,10 +38,10 @@ public class CacheConfiguration implements CachingConfigurer {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
 
         GuavaCache cache1 = new GuavaCache(TIMESERIE_CACHE, CacheBuilder.newBuilder()
-                .expireAfterWrite(60, TimeUnit.MINUTES)
+                .expireAfterWrite(24, TimeUnit.HOURS)
                 .build());
         GuavaCache cache2 = new GuavaCache(STATION_BY_NAME_CACHE, CacheBuilder.newBuilder()
-                .expireAfterWrite(60, TimeUnit.MINUTES)
+                .expireAfterWrite(24, TimeUnit.HOURS)
                 .build());
 
         cacheManager.setCaches(Arrays.asList(cache1, cache2));

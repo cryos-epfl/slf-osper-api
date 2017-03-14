@@ -45,7 +45,7 @@ public class TimeserieUrlBuilderTest {
     @Test
     public void getTimeseriesDataUrlEmptyQuery() throws Exception {
         String result  = subject.getTimeseriesDataUrl("1", new TimeserieQueryDto());
-        assertThat(result, is("http://localhost:8095/measurement/timeseries/1/data?from&until&limit"));
+        assertThat(result, is("http://localhost:8095/measurement/timeseries/1/data"));
     }
 
     @Test
@@ -55,6 +55,6 @@ public class TimeserieUrlBuilderTest {
         queryDto.setUntil("2016-11-17T13:00Z");
         String result  = subject.getTimeseriesDataUrl("1", queryDto);
         System.out.println("result = " + result);
-        assertThat(result, is("http://localhost:8095/measurement/timeseries/1/data?from=2016-11-17T13:00Z&until=2016-11-17T13:00Z&limit"));
+        assertThat(result, is("http://localhost:8095/measurement/timeseries/1/data?from=2016-11-17T13:00Z&until=2016-11-17T13:00Z"));
     }
 }
