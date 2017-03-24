@@ -1,6 +1,7 @@
 package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.configuration.CacheConfiguration;
+import ch.epfl.cryos.osper.api.util.StationNameBuilder;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.slf4j.LoggerFactory;
@@ -32,17 +33,12 @@ public class StationCache {
     }
 
 
-    @Cacheable(value = CacheConfiguration.TIMESERIE_CACHE, key = "#root.method.name")
+    @Cacheable(value = CacheConfiguration.STATION_BY_NAME_CACHE, key = "#root.method.name")
     public Map<String, Feature> getStationByName() {
         FeatureCollection features = restTemplate.getForObject(stationURLBuilder.getAllStationsUrl(), FeatureCollection.class);
         Map<String, Feature> result = features.getFeatures().stream().collect(
-                Collectors.toMap(this::buildStationName, x -> x));
+                Collectors.toMap(StationNameBuilder::buildStationName, x -> x));
         return result;
-    }
-
-    private String buildStationName(Feature station) {
-        StringJoiner stringJoiner = new StringJoiner("::");
-        return stringJoiner.add(station.getProperty("network")).add(station.getProperty("name")).toString();
     }
 
 }

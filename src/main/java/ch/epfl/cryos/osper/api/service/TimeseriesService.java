@@ -6,6 +6,7 @@ import ch.epfl.cryos.osper.api.dto.Timeserie;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import ch.epfl.cryos.osper.api.service.csvexport.MeasurementCsvWriter;
 import ch.epfl.cryos.osper.api.service.csvexport.MeasurementTableBuilder;
+import ch.epfl.cryos.osper.api.util.TimeserieFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Lookup;
@@ -52,12 +53,13 @@ public class TimeseriesService {
     Set<Group> getGroupsForStation(String stationId) {
         Collection<Timeserie> timeseries = getTimeseriesInfoForStation(stationId);
 
+        return TimeserieFunctions.getGroupsForTimeseries(timeseries);
+    }
 
-        Set<Group> groups =
-                timeseries.stream()
-                        .flatMap(e->e.getMeasurand().getGroups().stream())
-                        .collect(Collectors.toSet());
-        return groups;
+    Set<String> getGroupsNamesForStation(String stationId) {
+        Collection<Timeserie> timeseries = getTimeseriesInfoForStation(stationId);
+
+        return TimeserieFunctions.getGroupNamesForTimeseries(timeseries);
     }
 
     Collection<Timeserie> getTimeseriesInfoForStation(String stationId) {

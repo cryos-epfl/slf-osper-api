@@ -1,10 +1,7 @@
 package ch.epfl.cryos.osper.api.controller;
 
 import ch.epfl.cryos.osper.api.ApplicationFields;
-import ch.epfl.cryos.osper.api.dto.Group;
-import ch.epfl.cryos.osper.api.dto.JsonViews;
-import ch.epfl.cryos.osper.api.dto.Network;
-import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
+import ch.epfl.cryos.osper.api.dto.*;
 import ch.epfl.cryos.osper.api.service.StationServiceImpl;
 import ch.slf.pro.common.util.exception.SlfProRuntimeException;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -52,12 +49,20 @@ public class StationController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get data", notes = "Returns station metadata in GeoJSON format. ", response = String.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "networks", value = "List of networks", required = false, paramType = "query"),
+            @ApiImplicitParam(name = "stations", value = "List of Stations ", required = false, paramType = "query"),
+            @ApiImplicitParam(name = "groups", value = "List of groups " , required = false, paramType = "query"),
+            @ApiImplicitParam(name = "altitudeMin", value = "altitude min " , required = false, paramType = "query"),
+            @ApiImplicitParam(name = "altitudeMax", value = "altitude max " , required = false, paramType = "query")
+//            @ApiImplicitParam(name = "from", value = "Start of the timespan " + DATE_TIME_FORMATS, required = false, paramType = "query", defaultValue = "2016-11-17T13:00Z"),
+//            @ApiImplicitParam(name = "until", value = "End of the timespan " + DATE_TIME_FORMATS, required = false, paramType = "query", defaultValue = "2016-11-17T18:00Z")
+    })
 
     public FeatureCollection getAllStations(
-            @RequestParam(value = "networks", required = false) Set<String> networks
-    ) {
+            @ApiIgnore StationFilterQuery query)  {
 
-        return service.getStations(networks);
+        return service.getStations(query);
     }
 
 
@@ -136,6 +141,29 @@ public class StationController {
     }
 
 
+//    @JsonView(JsonViews.Osper.class)
+//    @ResponseStatus(value = HttpStatus.OK)
+//    @RequestMapping(
+//            value = "stations/{timeserieId}",
+//            method = RequestMethod.GET,
+//            produces = MediaType.APPLICATION_JSON_VALUE)
+//    @ApiOperation(value = "Get data", notes = "Returns timeserie metadata and data JSON format. ", response = String.class)
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "from", value = "Start of the timespan " + DATE_TIME_FORMATS, required = false, paramType = "query", defaultValue = "2016-11-17T13:00Z"),
+//            @ApiImplicitParam(name = "until", value = "End of the timespan " + DATE_TIME_FORMATS, required = false, paramType = "query", defaultValue = "2016-11-17T18:00Z"),
+//            @ApiImplicitParam(name = "limit", value = "Row number limit ", required = false, paramType = "query")
+//    })
+//    public void getTimeserieStremById(
+//            @PathVariable(value = "timeserieId") @ApiParam(value = "Timeserie ID", required = true) Long timeserieId,
+//            @ApiIgnore TimeserieQueryDto query,
+//            HttpServletResponse response
+//    ) throws IOException {
+//
+//        log.debug("Get tsId=" + timeserieId + " query " + query);
+//
+//        service.writeTimeserieStream(timeserieId.toString(), query, response.getOutputStream());
+//        response.flushBuffer();
+//    }
 
 
 }

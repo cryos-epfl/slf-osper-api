@@ -2,6 +2,7 @@ package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Network;
+import ch.epfl.cryos.osper.api.dto.StationFilterQuery;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
@@ -18,6 +19,8 @@ public interface StationService {
 
     FeatureCollection getStations(Collection<String> networks);
 
+    FeatureCollection getStations(StationFilterQuery query);
+
     Feature getStationInfo(String stationId);
 
 //    TimeserieDto getTimeserieForQuery(String timeserieId, TimeserieQueryDto query);
@@ -29,4 +32,6 @@ public interface StationService {
     List<Network> getAllNetworks();
 
     List<Group> getAllGroups();
+
+
 }

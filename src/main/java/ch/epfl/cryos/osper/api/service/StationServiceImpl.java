@@ -1,26 +1,22 @@
 package ch.epfl.cryos.osper.api.service;
 
 import ch.epfl.cryos.osper.api.dto.*;
+import ch.epfl.cryos.osper.api.util.FeatureFilter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.geojson.Feature;
 import org.geojson.FeatureCollection;
 import org.geojson.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.inject.Inject;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.SequenceInputStream;
 import java.util.*;
 
 /**
@@ -65,13 +61,23 @@ public class StationServiceImpl implements StationService {
 
 
         for (Feature feature : features) {
-            Set<Group> groups = timeseriesService.getGroupsForStation(getStationId(feature));
+//            Set<Group> groups = timeseriesService.getGroupsForStation(getStationId(feature));
+            Set<String> groups = timeseriesService.getGroupsNamesForStation(getStationId(feature));
             //ToDo: remove feature if groups are empty?
             feature.setProperty("groups", groups);
         }
 
 
         return features;
+    }
+
+    @Override
+    public FeatureCollection getStations(StationFilterQuery query) {
+        FeatureCollection featureCollection = getStations(query.getNetworks());
+
+        featureCollection.setFeatures(FeatureFilter.filterFeatures(featureCollection.getFeatures(), query));
+
+        return featureCollection;
     }
 
     @Override

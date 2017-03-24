@@ -29,6 +29,7 @@ public class CacheConfiguration implements CachingConfigurer {
     public final static String STATION_BY_NAME_CACHE = "stationByName";
 
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(CacheConfiguration.class);
+    public static final String STATIONS_OF_GROUP_CACHE = "stationsOfGroup";
 
 
     @Bean
@@ -44,7 +45,11 @@ public class CacheConfiguration implements CachingConfigurer {
                 .expireAfterWrite(24, TimeUnit.HOURS)
                 .build());
 
-        cacheManager.setCaches(Arrays.asList(cache1, cache2));
+        GuavaCache cache3 = new GuavaCache(STATIONS_OF_GROUP_CACHE, CacheBuilder.newBuilder()
+                .expireAfterWrite(24, TimeUnit.HOURS)
+                .build());
+
+        cacheManager.setCaches(Arrays.asList(cache1, cache2, cache3));
 
         return cacheManager;
     }
