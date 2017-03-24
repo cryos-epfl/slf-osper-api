@@ -45,11 +45,8 @@ public class CacheConfiguration implements CachingConfigurer {
                 .expireAfterWrite(24, TimeUnit.HOURS)
                 .build());
 
-        GuavaCache cache3 = new GuavaCache(STATIONS_OF_GROUP_CACHE, CacheBuilder.newBuilder()
-                .expireAfterWrite(24, TimeUnit.HOURS)
-                .build());
 
-        cacheManager.setCaches(Arrays.asList(cache1, cache2, cache3));
+        cacheManager.setCaches(Arrays.asList(cache1, cache2));
 
         return cacheManager;
     }
