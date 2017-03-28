@@ -68,7 +68,7 @@ public class StationController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(
-            value = "stations/name={stationName}",
+            value = "stations/name/{stationName}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get data", notes = "Returns station metadata in GeoJSON format. ", response = String.class)
