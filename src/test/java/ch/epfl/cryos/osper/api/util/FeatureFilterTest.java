@@ -1,5 +1,6 @@
 package ch.epfl.cryos.osper.api.util;
 
+import ch.epfl.cryos.osper.api.dto.Group;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Range;
 import org.geojson.Feature;
@@ -21,17 +22,17 @@ public class FeatureFilterTest {
     @Test
     public void hasAllGroupNames() throws Exception {
 
-        List<String> groups1 = Lists.newArrayList("g1", "g2", "g3");
+        List<Group> groups1 = Lists.newArrayList(new Group(1l, "g1", "n1"), new Group(2l, "g2", "n2"), new Group(3l, "g3", "n3"));
         Feature feature = createFeatureMock("name1", "nw1", groups1, 100d);
-        assertThat(FeatureFilter.hasAllGroupNames(Lists.newArrayList("g1")).test(feature), is(true));
-        assertThat(FeatureFilter.hasAllGroupNames(Lists.newArrayList("g1", "g2")).test(feature), is(true));
-        assertThat(FeatureFilter.hasAllGroupNames(Lists.newArrayList("g1", "g4")).test(feature), is(false));
-        assertThat(FeatureFilter.hasAllGroupNames(null).test(feature), is(true));
-        assertThat(FeatureFilter.hasAllGroupNames(Lists.newArrayList()).test(feature), is(true));
+        assertThat(FeatureFilter.hasAllGroupCodes(Lists.newArrayList("g1")).test(feature), is(true));
+        assertThat(FeatureFilter.hasAllGroupCodes(Lists.newArrayList("g1", "g2")).test(feature), is(true));
+        assertThat(FeatureFilter.hasAllGroupCodes(Lists.newArrayList("g1", "g4")).test(feature), is(false));
+        assertThat(FeatureFilter.hasAllGroupCodes(null).test(feature), is(true));
+        assertThat(FeatureFilter.hasAllGroupCodes(Lists.newArrayList()).test(feature), is(true));
 
         groups1 = Lists.newArrayList();
         feature = createFeatureMock("name1", "nw1", groups1, 100d);
-        assertThat(FeatureFilter.hasAllGroupNames(Lists.newArrayList("g1")).test(feature), is(false));
+        assertThat(FeatureFilter.hasAllGroupCodes(Lists.newArrayList("g1")).test(feature), is(false));
 
     }
 
@@ -51,7 +52,7 @@ public class FeatureFilterTest {
 
     }
 
-    private Feature createFeatureMock(String name, String network, Collection<String> groups, double altitude) {
+    private Feature createFeatureMock(String name, String network, Collection<Group> groups, double altitude) {
         Feature feature = mock(Feature.class);
         when(feature.getProperty("name")).thenReturn(name);
         when(feature.getProperty("network")).thenReturn(network);

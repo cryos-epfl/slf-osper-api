@@ -4,12 +4,9 @@ import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.Measurement;
 import ch.epfl.cryos.osper.api.dto.Timeserie;
 import ch.epfl.cryos.osper.api.dto.TimeserieQueryDto;
-import ch.epfl.cryos.osper.api.service.csvexport.MeasurementCsvWriter;
-import ch.epfl.cryos.osper.api.service.csvexport.MeasurementTableBuilder;
 import ch.epfl.cryos.osper.api.util.TimeserieFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -18,12 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Created by kryvych on 13/01/17.
@@ -56,10 +48,10 @@ public class TimeseriesService {
         return TimeserieFunctions.getGroupsForTimeseries(timeseries);
     }
 
-    Set<String> getGroupsNamesForStation(String stationId) {
+    Set<Group> getGroupsNamesForStation(String stationId) {
         Collection<Timeserie> timeseries = getTimeseriesInfoForStation(stationId);
 
-        return TimeserieFunctions.getGroupNamesForTimeseries(timeseries);
+        return TimeserieFunctions.getGroupsForTimeseries(timeseries);
     }
 
     Collection<Timeserie> getTimeseriesInfoForStation(String stationId) {

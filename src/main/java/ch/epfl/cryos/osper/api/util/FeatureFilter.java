@@ -1,5 +1,6 @@
 package ch.epfl.cryos.osper.api.util;
 
+import ch.epfl.cryos.osper.api.dto.Group;
 import ch.epfl.cryos.osper.api.dto.StationFilterQuery;
 import com.google.common.collect.Range;
 import org.apache.commons.collections4.CollectionUtils;
@@ -16,13 +17,15 @@ import java.util.stream.Collectors;
  */
 public class FeatureFilter {
 
-    public static Predicate<Feature> hasAllGroupNames(final Collection<String> groupNames) {
+    public static Predicate<Feature> hasAllGroupCodes(final Collection<String> groupCodes) {
         return feature -> {
-            if (CollectionUtils.isEmpty(groupNames)) {
+            if (CollectionUtils.isEmpty(groupCodes)) {
                 return true;
             }
-            Collection<String> groups = feature.getProperty("groups");
-            return !CollectionUtils.isEmpty(groups) && CollectionUtils.isSubCollection(groupNames, groups);
+            Collection<Group> groups = feature.getProperty("groups");
+            List<String> featuresGroupCode = groups.stream().map(Group::getCode).collect(Collectors.toList());
+            return !CollectionUtils.isEmpty(groups)
+                    && CollectionUtils.isSubCollection(groupCodes, featuresGroupCode);
         };
     }
 
@@ -43,7 +46,7 @@ public class FeatureFilter {
     public static List<Feature> filterFeatures(List<Feature> features, StationFilterQuery query) {
         return features.stream()
                 .filter(hasStationName(query.getStations()))
-                .filter(hasAllGroupNames(query.getGroups()))
+                .filter(hasAllGroupCodes(query.getGroups()))
                 .filter(onAltitude(query.getAltitudeRange()))
                 .collect(Collectors.toList());
 

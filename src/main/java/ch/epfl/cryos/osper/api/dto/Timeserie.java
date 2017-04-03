@@ -1,9 +1,6 @@
 package ch.epfl.cryos.osper.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.geojson.LngLatAlt;
 import org.geojson.jackson.LngLatAltSerializer;
@@ -19,9 +16,9 @@ public class Timeserie {
     @JsonView(JsonViews.Osper.class)
     private Long id;
 
-//    @JsonIgnore
     private String stationId;
 
+    @JsonIgnore
     private String deviceId;
 
     @JsonView(JsonViews.Osper.class)

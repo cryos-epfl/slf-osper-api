@@ -62,7 +62,7 @@ public class StationServiceImpl implements StationService {
 
         for (Feature feature : features) {
 //            Set<Group> groups = timeseriesService.getGroupsForStation(getStationId(feature));
-            Set<String> groups = timeseriesService.getGroupsNamesForStation(getStationId(feature));
+            Set<Group> groups = timeseriesService.getGroupsNamesForStation(getStationId(feature));
             //ToDo: remove feature if groups are empty?
             feature.setProperty("groups", groups);
         }

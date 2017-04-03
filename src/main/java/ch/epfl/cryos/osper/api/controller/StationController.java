@@ -81,6 +81,22 @@ public class StationController {
 
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(
+            value = "stations/{networkCode}/{stationCode}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get data", notes = "Returns station metadata in GeoJSON format. ", response = String.class)
+
+    public Feature getStationByCodeNetwork(
+            @PathVariable(value = "networkCode") @ApiParam(value = "networkCode", required = true) String networkCode,
+            @PathVariable(value = "stationCode") @ApiParam(value = "stationCode", required = true) String stationCode
+    ) {
+
+        return service.getStationInfoByName(networkCode + "::" + stationCode);
+
+    }
+
     @JsonView(JsonViews.Osper.class)
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(
